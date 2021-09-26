@@ -1,5 +1,5 @@
 
-#import bibliotheque
+#import libraries
 import math
 import pyaudio
 import numpy as np
@@ -8,64 +8,57 @@ import scipy.io.wavfile as sciwave
 import wave as wav
 from numpy.fft import fft
 import os
-import datetime
 import time
 
 
-'''choix des notes'''
+'''Get the note'''
 
-note_choisie = input('\n Choisir la note : ')
-# On demande à l'utilisteur de choisir la note qu'il veut accorder
+chosen_note = input('\nChoose a note to check (English naming convention) : ')
 
-note_frequence_dict = {  # on met en place un dictionnaire
-    "sol": 196,
-    "re": 294,
-    "la": 440,
-    "mi": 660
+# The user is asked to choose the note he wants to tune
+
+note_frequency_dict = { 
+    "G": 196,
+    "D": 294,
+    "A": 440,
+    "E": 660
 }
 
-if note_choisie not in note_frequence_dict:
-    print("Chosen note \""+note_choisie+"\" invalid")
+if chosen_note not in note_frequency_dict:
+    print("Chosen note \""+chosen_note+"\" invalid")
     exit(1)
 
-frequence_cible = note_frequence_dict[note_choisie]
-# afficher la fréquence de la note  choisie
-print('Fréquence cible = ', frequence_cible)
-print()
-# ------------------------------
-'''pause dans le programme'''
+target_frequency = note_frequency_dict[chosen_note]
 
-pause = 3
-print('Pause en cours')
-time.sleep(pause)
-print('fin de la pause de ', pause, 'secondes')
-time.sleep(0.1)
+print('Target Frequency = ', target_frequency, 'Hz\n')
+
+# Pause in the program for the user to prepare the recording
+PAUSE = 3
+print('Pause of ', PAUSE, 'seconds underway - Prepare for recording')
+time.sleep(PAUSE)
+
+time.sleep(PAUSE/10)
 # -----------------------------------
-'''ENREGISTREMENT'''
+'''RECORDING'''
 
-note_choisie = str(note_choisie)
-
-
-CURRENT_DATE = datetime.datetime.now()
-# print(str(CURRENT_DATE))
-frequence_cible = str(frequence_cible)
+chosen_note = str(chosen_note)
+target_frequency = str(target_frequency)
 
 FORMAT = pyaudio.paInt16
-CHANNELS = 1
+CHANNELS = 1 # record in mono 
 RATE = 44100
 CHUNK = 1024
-RECORD_SECONDS = 2    # secondes
-WAVE_OUTPUT_FILENAME = frequence_cible + ".wav"
-#WAVE_OUTPUT_FILENAME = "A_440.wav"
+RECORD_SECONDS = 2    # seconds
+WAVE_OUTPUT_FILENAME = target_frequency + ".wav"
 
 audio = pyaudio.PyAudio()
 
-# Debut enregistrement
+# Start recording
 stream = audio.open(format=FORMAT, channels=CHANNELS,
                     rate=RATE, input=True,
                     frames_per_buffer=CHUNK)
-print()
-print("*Enregistrement en cours...")
+
+print("\n* Recording in progress ...")
 
 frames = []
 
@@ -73,8 +66,7 @@ for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
     data = stream.read(CHUNK)
     frames.append(data)
 
-print()
-print("Fin d'enregistrement")
+print("\n Recording completed :-D ")
 
 
 # Fin enregistrement
@@ -89,23 +81,23 @@ waveFile.setframerate(RATE)
 waveFile.writeframes(b''.join(frames))
 waveFile.close()
 # -------------------------------
-'''PARTIE FFT'''
+''' Fast Fourier Transform '''
 
-# Fichier que l'on veut joindre
-FILE = os.path.join(frequence_cible+".wav")
-#FILE = os.path.join("440_sine.wav")
+# get the file we recorded
+FILE = os.path.join(target_frequency+".wav")
 
-
-# Lecture du fichier son
-RATE, DATA = sciwave.read(FILE)
+# Play the sound file
+RATE, DATA = sciwave.read(FILE) # get the sample rate
 TAB = np.array(DATA)
-# np.set_printoptions(threshold=sys.maxsize)
-# print('tab=',TAB)
+
+# To get all the values from the array (debug)
+#np.set_printoptions(threshold=sys.maxsize)
+#print('tab=',TAB)
 
 n = DATA.size
 DUREE = 1.0*n/RATE
 
-# Affichage du spectre du son
+# Get the sound spectrum
 te = 1.0/RATE
 t = np.zeros(n)
 for k in range(n):
@@ -119,34 +111,35 @@ title('spectre')
 grid(100)
 
 
-# Calul de la transformée de Fourier
+# Calculation of the FFT
 def tracerFFT(DATA, RATE, debut, DUREE):
     start = int(debut*RATE)
     stop = int((debut+DUREE)*RATE)
     spectre = np.absolute(fft(DATA[start:stop]))
     spectre = spectre/spectre.max()
-    n = spectre.size
+    spectre_size = spectre.size
 
-    freq = np.zeros(n)
+    freq = np.zeros(spectre_size)
     frequence_jouee_interne = 0
-    for k in range(n):
-        freq[k] = 1.0/n*RATE*k
+    # go through all the frequencies and 
+    for k in range(spectre_size):
+        freq[k] = 1.0/spectre_size*RATE*k
         if spectre[k] == 1 and freq[k] < 1500:
             frequence_jouee_interne = freq[k]
-    # freq, couleur fond, spectre, couleur lignes
+    # frequency, background color, spectre, line colour
     vlines(freq, 0, spectre, 'r')
-    xlabel('f (Hz)')
-    ylabel('A')
-    title('Transformée de Fourier')
+    xlabel('Frequency (Hz)')
+    ylabel('Amplitude')
+    title('Fourier Transform')
     axis([0, 0.5*RATE, 0, 1])
     grid()
     return [frequence_jouee_interne]
 
 
-# Affichage de la FFT
-figure(figsize=(12, 4))  # règle la taille des fenetres
-FrequenceJouee = tracerFFT(DATA, RATE, 0.1, 0.5)  # DATA,RATE,debut,DUREE
+# Display the FFT
+figure(figsize=(12, 4))  # sets the window size
+PlayedFrequency = tracerFFT(DATA, RATE, 0.1, 0.5)  # DATA,RATE,debut,DUREE
 axis([0, 1000, 0, 1])  # axes xmin,xmax,ymin,ymax
-FrequenceJouee = str(FrequenceJouee)
-print("\n" + 'frequence jouée', note_choisie, "=", (FrequenceJouee), "Hz")
-show()  # affiche le graphique
+PlayedFrequency = str(PlayedFrequency)
+print("\n" + 'Played frequency ', chosen_note, "=", (PlayedFrequency), "Hz")
+show()  # display the graph
