@@ -1,5 +1,4 @@
 
-#import libraries
 import math
 import pyaudio
 import numpy as np
@@ -10,12 +9,7 @@ from numpy.fft import fft
 import os
 import time
 
-
-'''Get the note'''
-
 chosen_note = input('\nChoose a note to check (English naming convention) : ')
-
-# The user is asked to choose the note he wants to tune
 
 note_frequency_dict = { 
     "G": 196,
