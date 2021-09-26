@@ -4,17 +4,17 @@ import math
 import pyaudio
 import numpy as np
 from matplotlib.pyplot import *
-import scipy.io.wavfile as wave
+import scipy.io.wavfile as sciwave
+import wave as wav
 from numpy.fft import fft
 import os
 import datetime
 import time
 
 
-# --------------------------------------
 '''choix des notes'''
-print("")   # add line before the question to add lisibility
-note_choisie = input('Choisir la note : ')
+
+note_choisie = input('\n Choisir la note : ')
 # On demande à l'utilisteur de choisir la note qu'il veut accorder
 
 note_frequence_dict = {  # on met en place un dictionnaire
@@ -54,9 +54,9 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
 CHUNK = 1024
-RECORD_SECONDS = 2  # secondes
-#WAVE_OUTPUT_FILENAME = frequence_cible + ".wav"
-WAVE_OUTPUT_FILENAME = "440_sine.wav"
+RECORD_SECONDS = 2    # secondes
+WAVE_OUTPUT_FILENAME = frequence_cible + ".wav"
+#WAVE_OUTPUT_FILENAME = "A_440.wav"
 
 audio = pyaudio.PyAudio()
 
@@ -82,7 +82,7 @@ stream.stop_stream()
 stream.close()
 audio.terminate()
 
-waveFile = wave.read(WAVE_OUTPUT_FILENAME, 'wb')
+waveFile = wav.open(WAVE_OUTPUT_FILENAME, 'wb')
 waveFile.setnchannels(CHANNELS)
 waveFile.setsampwidth(audio.get_sample_size(FORMAT))
 waveFile.setframerate(RATE)
@@ -92,12 +92,12 @@ waveFile.close()
 '''PARTIE FFT'''
 
 # Fichier que l'on veut joindre
-#FILE = os.path.join(frequence_cible+".wav")
-FILE = os.path.join("440_sine.wav")
+FILE = os.path.join(frequence_cible+".wav")
+#FILE = os.path.join("440_sine.wav")
 
 
 # Lecture du fichier son
-RATE, DATA = wave.read(FILE)
+RATE, DATA = sciwave.read(FILE)
 TAB = np.array(DATA)
 # np.set_printoptions(threshold=sys.maxsize)
 # print('tab=',TAB)
@@ -114,7 +114,7 @@ figure(figsize=(12, 4))
 plot(t, DATA)
 xlabel("t (s)")
 ylabel("amplitude")
-axis([0, 0.3, DATA.min(), DATA.max()])
+axis([0, RECORD_SECONDS, DATA.min(), DATA.max()])
 title('spectre')
 grid(100)
 
@@ -147,8 +147,6 @@ def tracerFFT(DATA, RATE, debut, DUREE):
 figure(figsize=(12, 4))  # règle la taille des fenetres
 FrequenceJouee = tracerFFT(DATA, RATE, 0.1, 0.5)  # DATA,RATE,debut,DUREE
 axis([0, 1000, 0, 1])  # axes xmin,xmax,ymin,ymax
-# show()                          #affiche grahique
-print()
 FrequenceJouee = str(FrequenceJouee)
-print('frequence jouée', note_choisie, "=", (FrequenceJouee), "Hz")
-print()
+print("\n" + 'frequence jouée', note_choisie, "=", (FrequenceJouee), "Hz")
+show()  # affiche le graphique
