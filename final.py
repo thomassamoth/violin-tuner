@@ -29,6 +29,20 @@ def ask_note():
     return chosen_note
 
 
+def ask_show():
+    answer = input("Do you want to plot the graphs ? (y/n) ")
+    if answer == 'y':
+        print("Graph displayed")
+        show()
+
+    elif answer == 'n':
+        print("Graphs won't be displayed\n")
+
+    else:
+        print("Wrong choice, try again")
+        ask_show()
+
+
 chosen_note = ask_note()
 target_frequency = note_frequency_dict[chosen_note]
 
@@ -98,7 +112,7 @@ DUREE = 1.0*n/RATE
 
 # Get the sound spectrum
 te = 1.0/RATE
-t = np.zeros(n) # fill the array with zeros
+t = np.zeros(n)  # fill the array with zeros
 for k in range(n):
     t[k] = te*k
 figure(figsize=(12, 4))
@@ -143,8 +157,6 @@ axis([0, 1000, 0, 1])  # axes xmin,xmax,ymin,ymax
 print("\033[96m\n" + 'Played frequency ', chosen_note, "=",
       str(PlayedFrequency), "Hz\n\x1B[37m")  # print in cyan
 
-show()  # display the graph
-
 
 # user get an error message if the played frequency is 0
 def recording_error(PlayedFrequency):
@@ -155,5 +167,5 @@ def recording_error(PlayedFrequency):
         print("Probable cause: The microphone is too far away from the audio source")
         print("\x1B[37mPlease try again !\n")
 
-
 recording_error(PlayedFrequency)
+ask_show()
