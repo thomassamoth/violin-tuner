@@ -1,14 +1,14 @@
 
 import math
-import pyaudio
-import numpy as np
-from matplotlib.pyplot import *
-import scipy.io.wavfile as sciwave
-import wave as wav
-from numpy.fft import fft
 import os
 import time
+import wave as wav
 
+import numpy as np
+import pyaudio
+import scipy.io.wavfile as sciwave
+from matplotlib.pyplot import *
+from numpy.fft import fft
 
 note_frequency_dict = {
     "G": 196,
@@ -19,7 +19,6 @@ note_frequency_dict = {
 
 
 def ask_note():
-
     chosen_note = input(
         '\nChoose a note to check (English naming convention) : ')
 
@@ -48,7 +47,7 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1  # record in mono
 RATE = 44100
 CHUNK = 1024
-RECORD_SECONDS = 2    # seconds
+RECORD_SECONDS = 2  # seconds
 WAVE_OUTPUT_FILENAME = str(target_frequency) + ".wav"
 
 audio = pyaudio.PyAudio()
@@ -99,7 +98,7 @@ DUREE = 1.0*n/RATE
 
 # Get the sound spectrum
 te = 1.0/RATE
-t = np.zeros(n)
+t = np.zeros(n) # fill the array with zeros
 for k in range(n):
     t[k] = te*k
 figure(figsize=(12, 4))
@@ -138,7 +137,7 @@ def tracerFFT(DATA, RATE, debut, DUREE):
 
 
 # Display the FFT
-figure(figsize=(12, 4))  # sets the window sizeA
+figure(figsize=(12, 4))  # sets the window size
 PlayedFrequency = tracerFFT(DATA, RATE, 0.1, 0.5)  # DATA,RATE,debut,DUREE
 axis([0, 1000, 0, 1])  # axes xmin,xmax,ymin,ymax
 print("\033[96m\n" + 'Played frequency ', chosen_note, "=",
@@ -147,15 +146,14 @@ print("\033[96m\n" + 'Played frequency ', chosen_note, "=",
 show()  # display the graph
 
 
-def recording_error(PlayedFrequency): # user get an error message if the played frequency is 0
+# user get an error message if the played frequency is 0
+def recording_error(PlayedFrequency):
 
-    if PlayedFrequency == '0':
+    if PlayedFrequency == 0:
         print("\n======  ERROR =====")
         print("\x1B[37mThere's been an error while recording \033[91m")
         print("Probable cause: The microphone is too far away from the audio source")
         print("\x1B[37mPlease try again !\n")
 
-    
 
 recording_error(PlayedFrequency)
-
