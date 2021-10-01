@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 import math
 import os
 import time
@@ -32,7 +32,7 @@ def ask_note():
 def ask_show():
     answer = input("Do you want to plot the graphs ? (y/n) ")
     if answer == 'y':
-        print("Graph displayed")
+        print("Graph displayed\n")
         show()
 
     elif answer == 'n':
@@ -41,6 +41,18 @@ def ask_show():
     else:
         print("Wrong choice, try again")
         ask_show()
+
+# Tells the user the error there is between the played frequency and the wanted one
+def error_percentage(PlayedFrequency):
+    percentage = abs(PlayedFrequency-target_frequency)/target_frequency*100
+    print("Percentage Error : ", "%.2f" % percentage, "%")
+    if percentage == 0:
+        print("\x1B[32mYour note is tuned ! Well done ! \n\x1B[37m")
+
+    elif percentage >= 25:
+        print("The difference seems to be too important")
+        print("Please verify you have chosen the right string to tune")
+        print("Reminder :  you've chosen the note : \x1B[38;2;0;255;247m", chosen_note, "\n")
 
 
 chosen_note = ask_note()
@@ -153,6 +165,7 @@ def tracerFFT(DATA, RATE, debut, DUREE):
 # Display the FFT
 figure(figsize=(12, 4))  # sets the window size
 PlayedFrequency = tracerFFT(DATA, RATE, 0.1, 0.5)  # DATA,RATE,debut,DUREE
+#PlayedFrequency = 440 # test - debug
 axis([0, 1000, 0, 1])  # axes xmin,xmax,ymin,ymax
 print("\033[96m\n" + 'Played frequency ', chosen_note, "=",
       str(PlayedFrequency), "Hz\n\x1B[37m")  # print in cyan
@@ -167,5 +180,7 @@ def recording_error(PlayedFrequency):
         print("Probable cause: The microphone is too far away from the audio source")
         print("\x1B[37mPlease try again !\n")
 
+
 recording_error(PlayedFrequency)
 ask_show()
+error_percentage(PlayedFrequency)
