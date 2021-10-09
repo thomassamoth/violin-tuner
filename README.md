@@ -5,20 +5,24 @@ Project we did a few years ago to create a violin tuner, based on a Raspberry Pi
 This project is inspired by the [Roadie Tuner](https://www.roadiemusic.com/) (made for guitars) and divided into 3 parts : 
 1. Find the **frequency** played by the violin
 2. Turn the **motor** according to the received frequency to reach the wanted one
-3. "User Interface" using an RGB LED
+3. "User **Interface**" using an RGB LED
 
-*Here you'll only find the code for the 1st and 2nd part*
+*This part of the project can be used by itself and doesn't need the other ones*
 
 ## Dependencies
 
 To use this program, you must install several librairies :
-1. [PyAudio](https://pypi.org/project/PyAudio/)  
+1. [**PyAudio**](https://pypi.org/project/PyAudio/)  
 
-```pip install pyaudio``` 
+    ```pip install pyaudio``` 
 
-2. [Scipy](https://scipy.org/) 
+2. [**Scipy**](https://scipy.org/) 
  
-```pip install scipy```
+    ```pip install scipy```
+
+3. [**Matplolib**](https://matplotlib.org/)
+
+    ```pip install matplotlib```
 
 
 ## Demo of the program
