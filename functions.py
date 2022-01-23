@@ -47,7 +47,11 @@ def ask_show():
         ask_show()
 
 # Tells the user the error there is between the played frequency and the wanted one
+
+
 def error_percentage(PlayedFrequency, target_frequency, chosen_note):
+    error_msg = False
+
     percentage = abs(PlayedFrequency-target_frequency)/target_frequency*100
     print("Percentage Error : ", "%.2f" % percentage, "%")
     if percentage == 0:
@@ -58,16 +62,20 @@ def error_percentage(PlayedFrequency, target_frequency, chosen_note):
         print("The difference seems to be too important !")
         print("Please verify you have chosen the right string to tune")
         print(
-            "Reminder :  you've chosen the note : \x1B[38;2;0;255;247m", chosen_note, "\n\x1B[37m")
+            "Reminder : you've chosen the note\x1B[38;2;0;255;247m", chosen_note, "\n\x1B[37m")
+        error_msg = True
         quit
+    return error_msg
 
 # Make a pause in the program so that the user prepares the recording
+
+
 def pause(pause):
     print('Pause of ', pause, 'seconds underway - Prepare for recording')
     time.sleep(pause)
 
 
-#Calculation of the FFT
+# Calculation of the FFT
 def tracerFFT(DATA, RATE, debut, DUREE):
     start = int(debut*RATE)
     stop = int((debut+DUREE)*RATE)
@@ -91,6 +99,7 @@ def tracerFFT(DATA, RATE, debut, DUREE):
     axis([0, 0.5*RATE, 0, 1])
     grid()
     return frequence_jouee_interne
+
 
 def fast_fourier_transform(target_frequency):
     # get the file we recorded
@@ -122,15 +131,6 @@ def fast_fourier_transform(target_frequency):
     return DATA
 
 
-
-
-
-
-
-
-
-
-
 # user get an error message if the played frequency is 0
 def recording_error(PlayedFrequency):
 
@@ -138,5 +138,5 @@ def recording_error(PlayedFrequency):
         print("\n======  ERROR =====")
         print("\x1B[37mThere's been an error while recording \033[91m")
         print(
-            "\e[1mProbable cause:\e[0m The microphone is too far away from the audio source")
+            "\x1B1Probable cause:\x1B[0m The microphone is too far away from the audio source")
         print("\x1B[37mPlease try again !\n")
