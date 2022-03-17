@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-''' Violin Tuner
+"""Violin Tuner
 
 This program allows someone to tune a violin. It records each sound played on 
 each note and tells if it's tuned or not.
 This program uses Fast Fourier Transform to get the amplitude and determine the note
-
-''' 
+"""
 
 import math
 import os
@@ -21,30 +20,30 @@ from numpy.fft import fft
 import functions
 
 
-# Display the FFT
 def display_FFT(DATA):
+    """Display the FFT graph """
     figure(figsize=(12, 4))  # sets the window size
     PlayedFrequency = functions.tracerFFT(
         DATA, RATE, 0.1, 0.5)  # DATA,RATE,debut,DUREE
     axis([0, 1000, 0, 1])  # axes xmin,xmax,ymin,ymax
 
-    print("\033[96m\n" + 'Played frequency ', chosen_note, "=",
-          str(PlayedFrequency), "Hz\n\x1B[37m")  # print in cyan
+    # print in cyan
+    print(
+        f"\033[96m\nPlayed frequency {chosen_note} = {str(PlayedFrequency)} Hz\n\x1B[37m")
     return PlayedFrequency
 
 
 chosen_note = functions.ask_note()
-pause(3)
+functions.pause_program(3)
 target_frequency = functions.note_frequency_dict[chosen_note]
 
 # FILE = os.path.join(str(target_frequency)+".wav")
 # RATE, DATA = sciwave.read(FILE)  # get the sample rate
 # TAB = np.array(DATA)
 
-
-''' 
+"""
     RECORDING
-'''
+"""
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1  # record in mono
@@ -82,11 +81,11 @@ waveFile.setframerate(RATE)
 waveFile.writeframes(b''.join(frames))
 waveFile.close()
 
-'''
+"""
     MAIN
-'''
+"""
 
-print('Target Frequency = ', target_frequency, 'Hz\n')
+print(f'Target Frequency = {target_frequency} Hz\n')
 functions.fast_fourier_transform(target_frequency)
 
 PlayedFrequency = display_FFT(
