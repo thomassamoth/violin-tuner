@@ -4,6 +4,7 @@
     
 [![version - v1.1.0](https://img.shields.io/badge/version-v1.1.0-4ec1ff)](https://github.com/thomassamoth/violin-tuner/releases/tag/1.1.0)    
 </div>
+
 Project we did a few years ago to create a violin tuner, based on a Raspberry Pi.  
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Raspberry_Pi_3_B%2B_%2839906370335%29.png/1280px-Raspberry_Pi_3_B%2B_%2839906370335%29.png" height="200">  
 This project is inspired by the [Roadie Tuner](https://www.roadiemusic.com/) (made for guitars) and divided into 3 parts : 
