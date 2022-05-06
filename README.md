@@ -2,7 +2,7 @@
 
 <div align = "center">
     
-<a href="">[![version - v1.1.0](https://img.shields.io/badge/version-v1.1.0-4ec1ff)](https://github.com/thomassamoth/violin-tuner/releases/tag/1.1.0)</a>
+<a href="">[![version - v1.2.0](https://img.shields.io/badge/version-v1.2.0-4ec1ff)](https://github.com/thomassamoth/violin-tuner/releases/tag/1.1.0)</a>
 <a href="">[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)</a>
 <a href="">[![python](https://img.shields.io/badge/python-3.8.10-blue)](http://python.org)</a>
 </div>
@@ -31,9 +31,8 @@ To use this program, you must install several libraries :
 
 # List of features to add
 
-1. Put the recording inside a function to loop it
-2. Make a function to verify harmonics (if an harmonic is louder than the fundamental, just divide it and apply the error
-3. Add precisions in the error message when the wrong note is selected (e.g. the note played is closer to a 'E')
-4. Relaunch the program when the note is wrong (instead of stopping it directly)  
-
-5. Reverse the program to give the note associated with the played frequency
+- [X] Put the recording inside a function to loop it
+- [ ] Make a function to verify harmonics (if an harmonic is louder than the fundamental, just divide it and apply the error
+- [ ] Add precisions in the error message when the wrong note is selected (e.g. the note played is closer to a 'E')
+- [ ] Relaunch the program when the note is wrong (instead of stopping it directly)  
+- [ ] Reverse the program to give the note associated with the played frequency
