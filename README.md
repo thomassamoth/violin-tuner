@@ -2,7 +2,7 @@
 
 <div align = "center">
     
-<a href="">[![version - v1.2.0](https://img.shields.io/badge/version-v1.2.0-4ec1ff)](https://github.com/thomassamoth/violin-tuner/releases/tag/1.1.0)</a>
+<a href="">[![version - v1.2.0](https://img.shields.io/badge/version-v1.2.0-4ec1ff)](https://github.com/thomassamoth/violin-tuner/releases/tag/1.2.0)</a>
 <a href="">[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)</a>
 <a href="">[![python](https://img.shields.io/badge/python-3.8.10-blue)](http://python.org)</a>
 </div>
