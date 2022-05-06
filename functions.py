@@ -3,9 +3,7 @@
 import math
 import os
 import time
-import wave as wav
 import numpy as np
-import pyaudio
 import scipy.io.wavfile as sciwave
 from matplotlib.pyplot import *
 from numpy.fft import fft
@@ -19,6 +17,7 @@ COLOR_ORANGE = "\x1B[38;2;255;185;83m"
 COLOR_CYAN = "\x1B[38;2;0;255;247m"
 
 ERROR_MARGIN = 20
+
 
 def ask_note():
     """Ask the user the string to be tuned"""
@@ -58,7 +57,7 @@ def error_percentage(PlayedFrequency, target_frequency, chosen_note):
 
     percentage = abs(PlayedFrequency - target_frequency) / target_frequency * 100
     print(f"Percentage Error : {percentage:.2f} %")
-    
+
     if percentage == 0:
         print(COLOR_GREEN, "Your note is tuned ! Well done !", COLOR_WHITE)
 
@@ -72,7 +71,11 @@ def error_percentage(PlayedFrequency, target_frequency, chosen_note):
         """
         )
         print(
-            f"Reminder : you've chosen the note",COLOR_CYAN, f"{chosen_note}", COLOR_WHITE )
+            f"Reminder : you've chosen the note",
+            COLOR_CYAN,
+            f"{chosen_note}",
+            COLOR_WHITE,
+        )
         error_msg = True
         quit
     return error_msg
@@ -121,8 +124,8 @@ def fast_fourier_transform(target_frequency):
     TAB = np.array(DATA)
 
     # To get all the values from the array (--debug--)
-    #np.set_printoptions(threshold=sys.maxsize)
-    #print('tab=',TAB)
+    # np.set_printoptions(threshold=sys.maxsize)
+    # print('tab=',TAB)
 
     n = DATA.size
     DUREE = 1.0 * n / RATE
