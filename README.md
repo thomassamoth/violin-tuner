@@ -2,7 +2,9 @@
 
 <div align = "center">
     
-[![version - v1.1.0](https://img.shields.io/badge/version-v1.1.0-4ec1ff)](https://github.com/thomassamoth/violin-tuner/releases/tag/1.1.0)    
+<a href="">[![version - v1.1.0](https://img.shields.io/badge/version-v1.1.0-4ec1ff)](https://github.com/thomassamoth/violin-tuner/releases/tag/1.1.0)</a>
+<a href="">[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)</a>
+<a href="">[![python](https://img.shields.io/badge/python-3.8.10-blue)](http://python.org)</a>
 </div>
 
 Project we did a few years ago to create a violin tuner, based on a Raspberry Pi.  
@@ -17,20 +19,15 @@ This project is inspired by the [Roadie Tuner](https://www.roadiemusic.com/) (ma
 ## Dependencies
 
 To use this program, you must install several libraries :
-1. [**PyAudio**](https://pypi.org/project/PyAudio/)  
-
-    ```pip install pyaudio``` 
-
-2. [**Scipy**](https://scipy.org/) 
- 
+- [**Scipy**](https://scipy.org/)  
     ```pip install scipy```
 
-3. [**Matplotlib**](https://matplotlib.org/)
-
+- [**Matplotlib**](https://matplotlib.org/)  
     ```pip install matplotlib```
-4. [**Numpy**](http://numpy.org)  
-
+- [**Numpy**](http://numpy.org)  
     ```pip install numpy```
+- [**Sounddevice**](https://python-sounddevice.readthedocs.io/en/0.4.4/)  
+    ```pip install sounddevice```
 
 # List of features to add
 
