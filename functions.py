@@ -35,18 +35,12 @@ def ask_note():
 
 def ask_show():
     """Choice to display the graphs after recording"""
-
-    answer = input("Do you want to plot the graphs ? [y/n] ").lower()
-    if answer == "y":
-        print(COLOR_ORANGE, "Graph displayed\n")
-        show()
-
-    elif answer == "n":
-        print("Graph is not displayed\n")
-
-    else:
-        print("Invalid! Please, try again")
-        ask_show()
+    answer = ""
+    while answer not in ("y", "n"):
+        answer = input("Do you want to SEE the graphs ? [y/n] ").lower()
+        if answer == "y":
+            print(COLOR_ORANGE, "Graph displayed\n", COLOR_WHITE)
+            show()
 
 
 def error_percentage(PlayedFrequency, target_frequency, chosen_note):
@@ -130,7 +124,7 @@ def fast_fourier_transform(target_frequency):
     n = DATA.size
     DUREE = 1.0 * n / RATE
 
-    # #Get the sound spectrum
+    # # Get the sound spectrum
     # te = 1.0/RATE
     # t = np.zeros(n)  # fill the array with zeros
     # for k in range(n):

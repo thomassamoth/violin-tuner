@@ -33,15 +33,13 @@ def display_FFT(DATA, chosen_note):
     return PlayedFrequency
 
 
-
-
 def main():
     chosen_note = functions.ask_note()
     functions.pause_program(3)
     target_frequency = functions.note_frequency_dict[chosen_note]
     WAVE_OUTPUT_FILENAME = str(target_frequency) + ".wav"
 
-    recording.record_audio(WAVE_OUTPUT_FILENAME)
+    recording.record(WAVE_OUTPUT_FILENAME)
 
     print(f"Target Frequency = {target_frequency} Hz")
     functions.fast_fourier_transform(target_frequency)
