@@ -8,8 +8,6 @@ This program uses Fast Fourier Transform to get the amplitude and determine the 
 import math
 import os
 import time
-import numpy as np
-import pyaudio
 import scipy.io.wavfile as sciwave
 from matplotlib.pyplot import *
 from numpy.fft import fft
