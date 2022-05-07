@@ -32,7 +32,7 @@ To use this program, you must install several libraries :
 # List of features to add
 
 - [X] Put the recording inside a function to loop it
-- [ ] Make a function to verify harmonics (if an harmonic is louder than the fundamental, just divide it and apply the error
+- [ ] Add a filtering function to prevent the harmonics from being louder than the fundamental and to be picked up
 - [ ] Add precisions in the error message when the wrong note is selected (e.g. the note played is closer to a 'E')
 - [ ] Relaunch the program when the note is wrong (instead of stopping it directly)  
 - [ ] Reverse the program to give the note associated with the played frequency
