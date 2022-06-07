@@ -46,15 +46,17 @@ def main():
     # we exctract the data from the recording
     data = get_data_from_file(target_frequency)
 
-    played_frequency = get_peaking_frequency(data, chosen_note, rate=44_100)
+    # Get the FFT peaking value and the frequency assiociated with
+    played_frequency = calculate_FFT(data, 44_100)
+    
     # Verifies if the recording was correct
-    if not recording_error(played_frequency):      
-        error_message = error_percentage(played_frequency, target_frequency, chosen_note)
-        if not error_message:
+    if recording_error(played_frequency) is False:
+        if not error_percentage(played_frequency, target_frequency, chosen_note):
             ask_show()
         else:
             print("Graphics not displayed")
-
+            
+    del chosen_note # reset variable
 
 if __name__ == "__main__":
     main()

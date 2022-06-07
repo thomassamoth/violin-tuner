@@ -1,8 +1,19 @@
-/violin-tuner
-violin-tuner.zip
-*.wav
+
 __pycache__/
+bloc-note.py
+
 build/
 dist/
-main.spec
-violin-tuner.code-workspace
+
+*.spec
+
+# Folders
+/violin-tuner
+/filters
+/test-fft
+
+# Files
+violin-tuner.zip
+*.wav
+*.code-workspace
+*.sh

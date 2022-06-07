@@ -19,7 +19,7 @@ COLOR_RESET = "\x1b[0m"
 note_frequency_dict = {"G": 196.00, "D": 292.66, "A": 440.00, "E": 659.25}
 
 
-ERROR_MARGIN = 25  # %
+ERROR_MARGIN = 150  # %
 
 
 class WrongNoteChoiceError(Exception):
@@ -38,8 +38,10 @@ class ImportantPercentageError(Exception):
         return f"{type(ImportantPercentageError(Exception))} -> {warning_msg}"
 
     def reminder(self, chosen_note):
-        reminder_msg = f"%sReminder%s: you have chosen the note {chosen_note}" % (
+        reminder_msg = f"%sReminder%s: you have chosen the note %s{chosen_note}%s" % (
             COLOR_ORANGE,
+            COLOR_WHITE,
+            COLOR_CYAN,
             COLOR_WHITE,
         )
         return reminder_msg
@@ -80,7 +82,7 @@ def ask_note():
         pass
 
     try:
-        chosen_note
+        #chosen_note
         if chosen_note.upper() not in note_frequency_dict:
             raise WrongNoteChoiceError(
                 f"The note {chosen_note} is not in the dictionnary {note_frequency_dict.keys()}"
@@ -146,8 +148,8 @@ def pause_program(pause):
     time.sleep(pause)
 
 
-def tracerFFT(data, RATE, debut=0, duree=3) -> float:
-    """Calculation of the FFT.
+def calculate_FFT(data, RATE, debut=0, duree=3) -> float:
+    """Calculates of the FFT and .
 
     Args:
         data (numpy array): the input data
@@ -162,30 +164,32 @@ def tracerFFT(data, RATE, debut=0, duree=3) -> float:
     start = int(debut * RATE)
     stop = int(debut + duree) * RATE
 
-    # fourier_transform = fft(DATA[start:stop]) # Calculation of the FFT
 
-    spectre = np.absolute(fft(data[start:stop]))
-    spectre = spectre / spectre.max()  # Get a maximum value of 1
-    spectre_size = spectre.size
+    fourier_transform = np.absolute(fft(data[start:stop]))
+    fourier_transform /= fourier_transform.max()  # Get a maximum value of 1
+    fft_size = fourier_transform.size 
+    
+    frequence = np.zeros(fft_size)  # fill a np array with zeros
+    frequence_jouee_interne = 0.0 # setup a minimum value
 
-    freq = np.zeros(spectre_size)  # fill a np array with zeros
-    frequence_jouee_interne = 0
-
-    for k in range(spectre_size):
-        freq[k] = 1.0 / spectre_size * RATE * k
-        if spectre[k] == 1.0 and freq[k] < 1000:
-            frequence_jouee_interne = freq[k]
-
+    for i in range(int(fft_size/2)):
+        frequence[i] = round((1.0 / fft_size) * RATE * i, 3)
+        if fourier_transform[i] == np.amax(fourier_transform) and frequence[i] < 1000.0:
+            frequence_jouee_interne =  frequence[i]
+            
+    # Generate the main graph
+    figure(figsize=(19.20, 10.80))  # window's height, width in inches
+    vlines(x=frequence, ymin=[0], ymax=fourier_transform, colors="b")
     # frequency, background color, spectre, line colour
-    # main graph
-    figure(figsize=(1920, 1080))  # window's height, width in inches
-    vlines(x=freq, ymin=0, ymax=spectre, colors="b")
     xlabel("Frequency (Hz)")
     ylabel("Amplitude")
     title("Fast Fourier Transform")
     axis([0, 1000, 0, 1])
     grid()
+    
     return frequence_jouee_interne
+
+    
 
 
 def get_data_from_file(target_frequency):
@@ -196,7 +200,7 @@ def get_data_from_file(target_frequency):
         It is used to get the file's name.
 
     Returns:
-        _type_: _description_
+        numpy.ndarray: _description_
     """
     FILE = os.path.join(str(target_frequency) + ".wav")
 
@@ -249,7 +253,7 @@ def recording_error(PlayedFrequency) -> bool:
 
     Returns:
         bool: An exception has been raised or not
-    """        
+    """
     try:
         if PlayedFrequency == 0:
             raise RecordingError("An error occured while recording")
@@ -257,28 +261,8 @@ def recording_error(PlayedFrequency) -> bool:
 
     except RecordingError as e:
         print(f"{type(e)} -> {e}")
-        
+
         print("Please try again !\n")
         return True
-    
+
     return False
-
-
-def get_peaking_frequency(data, chosen_note: int, rate) -> np.float64:
-    """Gets the frequency which has the highest FFT value.
-
-    Args:
-        DATA (_type_): _description_
-        chosen_note (string): the note the user has chosen
-
-    Returns:
-        {numpy.float64}: frequency that is peaking 
-    """
-
-    PlayedFrequency = tracerFFT(data, rate, 0)
-
-    print(
-        f"%s\nPlayed frequency {chosen_note} : %0.2f Hz %s"
-        % (COLOR_CYAN, PlayedFrequency, COLOR_WHITE)
-    )
-    return PlayedFrequency
