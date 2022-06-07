@@ -11,13 +11,9 @@ def timer(duration):
         duration -= 1
 
 
-def record(filename):
+def record(filename, rate=44_100, duration=3):
 
-    # frequency
-    rate = 44100  # frames per second
-    duration = 3  # seconds
-
-    print("Recording ..........")
+    print(f"Recording during {duration} s ..........")
 
     # start recording
     recording = sd.rec(int(duration * rate), samplerate=rate, channels=1)  # mono

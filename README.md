@@ -18,20 +18,12 @@ This project is inspired by the [Roadie Tuner](https://www.roadiemusic.com/) (ma
 
 ## Dependencies
 
-To use this program, you must install several libraries :
-- [**Scipy**](https://scipy.org/)  
-    ```pip install scipy```
-
-- [**Matplotlib**](https://matplotlib.org/)  
-    ```pip install matplotlib```
-- [**Numpy**](http://numpy.org)  
-    ```pip install numpy```
-- [**Sounddevice**](https://python-sounddevice.readthedocs.io/en/0.4.4/)  
-    ```pip install sounddevice```
+To use this program and install packages,  simply run `pip install -r requirements.txt`
 
 # List of features to add
 
 - [X] Put the recording inside a function to loop it
+- [X] Add more precision for a frequency to be detected
 - [ ] Make a function to verify harmonics (if an harmonic is louder than the fundamental, just divide it and apply the error
 - [ ] Add precisions in the error message when the wrong note is selected (e.g. the note played is closer to a 'E')
 - [ ] Relaunch the program when the note is wrong (instead of stopping it directly)  

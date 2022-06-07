@@ -1,59 +1,59 @@
 #!/usr/bin/env python
-"""Violin Tuner
+"""
+Violin Tuner
+------------
 This program allows someone to tune a violin. It records each sound played on 
 each note and tells if it's tuned or not.
-This program uses Fast Fourier Transform to get the amplitude and determine the note
+It uses Fast Fourier Transform to get the amplitude and determine the note
 """
 
 import math
 import os
 import time
+
+import matplotlib.pyplot as plt
+import numpy as np
 import scipy.io.wavfile as sciwave
 from matplotlib.pyplot import *
 from numpy.fft import fft
+from scipy.signal import butter, freqz, lfilter
 
-import functions
-import recording
+# import test03
+from functions import *
+from recording import record, timer
 
-
-def display_FFT(DATA, chosen_note):
-    """Display the FFT graph"""
-    figure(figsize=(12, 4))  # sets the window size
-    PlayedFrequency = functions.tracerFFT(
-        DATA, 44100, 0.1, 0.5
-    )  # DATA,RATE,debut,DUREE
-    axis([0, 1000, 0, 1])  # axes xmin,xmax,ymin,ymax
-
-    # print in cyan
-    print(
-        f"\033[96m\nPlayed frequency {chosen_note} = {str(PlayedFrequency)} Hz\n\x1B[37m"
-    )
-    return PlayedFrequency
+COLOR_WHITE = "\n\x1B[97m"
+COLOR_GREEN = "\x1B[92m"
+COLOR_ORANGE = "\x1B[38;2;255;185;83m"
+COLOR_CYAN = "\x1B[96m"
 
 
 def main():
-    chosen_note = functions.ask_note()
-    functions.pause_program(3)
-    target_frequency = functions.note_frequency_dict[chosen_note]
-    WAVE_OUTPUT_FILENAME = str(target_frequency) + ".wav"
+    chosen_note = ask_note()
+    pause_program(3)
 
-    recording.record(WAVE_OUTPUT_FILENAME)
+    # we get the chosen note's related frequency
+    target_frequency = note_frequency_dict[chosen_note]
 
-    print(f"Target Frequency = {target_frequency} Hz")
-    functions.fast_fourier_transform(target_frequency)
+    WAVE_OUTPUT_FILENAME = f"{str(target_frequency)}.wav"
 
-    PlayedFrequency = display_FFT(
-        functions.fast_fourier_transform(target_frequency), chosen_note
+    record(WAVE_OUTPUT_FILENAME)
+
+    print(
+        f"%sThe target frequency associated with {chosen_note} is {target_frequency} Hz%s"
+        % (COLOR_CYAN, COLOR_WHITE)
     )
+    # we exctract the data from the recording
+    data = get_data_from_file(target_frequency)
 
-    functions.recording_error(PlayedFrequency)
-
-    error_message = functions.error_percentage(
-        PlayedFrequency, target_frequency, chosen_note
-    )
-
-    if error_message == False:
-        functions.ask_show()
+    played_frequency = get_peaking_frequency(data, chosen_note, rate=44_100)
+    # Verifies if the recording was correct
+    if not recording_error(played_frequency):      
+        error_message = error_percentage(played_frequency, target_frequency, chosen_note)
+        if not error_message:
+            ask_show()
+        else:
+            print("Graphics not displayed")
 
 
 if __name__ == "__main__":
