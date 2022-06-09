@@ -12,8 +12,15 @@ def timer(duration):
 
 
 def record(filename, rate=44_100, duration=3):
+    """Record the audio
 
-    print(f"Recording during {duration} s ..........")
+    Args:
+        filename (string): output name for the audio file
+        rate (sample rate, optional): _description_. Defaults to 44_100.
+        duration (int, optional): _description_. Defaults to 3.
+    """
+
+    print(f"Recording during {duration} seconds ..........")
 
     # start recording
     recording = sd.rec(int(duration * rate), samplerate=rate, channels=1)  # mono

@@ -16,9 +16,7 @@ import numpy as np
 import scipy.io.wavfile as sciwave
 from matplotlib.pyplot import *
 from numpy.fft import fft
-from scipy.signal import butter, freqz, lfilter
 
-# import test03
 from functions import *
 from recording import record, timer
 
@@ -30,31 +28,39 @@ COLOR_CYAN = "\x1B[96m"
 
 def main():
     chosen_note = ask_note()
-    pause_program(3)
 
-    # we get the chosen note's related frequency
+    # Gets the chosen note's related frequency
     target_frequency = note_frequency_dict[chosen_note]
 
+    # Generates the name from the frequency.
     WAVE_OUTPUT_FILENAME = f"{str(target_frequency)}.wav"
-
-    record(WAVE_OUTPUT_FILENAME)
+    
+    pause_program(5)
+    # Records the audio file
+    record(WAVE_OUTPUT_FILENAME, duration=3)
 
     print(
-        f"%sThe target frequency associated with {chosen_note} is {target_frequency} Hz%s"
-        % (COLOR_CYAN, COLOR_WHITE)
+        f"%sThe frequency associated with {chosen_note} is %s{target_frequency} Hz%s"
+        % (COLOR_WHITE,COLOR_ORANGE, COLOR_WHITE)
     )
-    # we exctract the data from the recording
+
+    
+    # Excracts the data from the audio file
     data = get_data_from_file(target_frequency)
 
-    # Get the FFT peaking value and the frequency assiociated with
-    played_frequency = calculate_FFT(data, 44_100)
-    
+    # Get the FFT peaking value and the frequency associated with
+    played_frequency, frequence, fourier_transform = calculate_FFT(data, chosen_note, 0.0, duree=3,)
+
+    print(
+        f"\033[96m\nPlayed frequency {chosen_note} ={played_frequency} Hz\n\x1B[37m"
+    )
     # Verifies if the recording was correct
-    if recording_error(played_frequency) is False:
+    if fft_error(played_frequency) is False:
         if not error_percentage(played_frequency, target_frequency, chosen_note):
-            ask_show()
+            ask_show(frequence, fourier_transform) # generates the graph and displays it
+
         else:
-            print("Graphics not displayed")
+            print("Graph not displayed")
             
     del chosen_note # reset variable
 
