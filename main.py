@@ -20,7 +20,7 @@ from numpy.fft import fft
 from functions import *
 from recording import record, timer
 
-from functions import colors
+from functions import color
 
 
 def main():
@@ -32,14 +32,12 @@ def main():
     # Generates the name from the frequency.
     WAVE_OUTPUT_FILENAME = f"{str(target_frequency)}.wav"
 
-    pause_program(0)
+    pause_program(5)
     # Record the audio file.
     record(WAVE_OUTPUT_FILENAME, duration=3)
 
     print(
-        f"%sThe frequency associated with {chosen_note} is %s{target_frequency} Hz%s"
-        % (colors["COLOR_WHITE"], colors["COLOR_ORANGE"], colors["COLOR_WHITE"])
-    )
+        f"{color.link_primary}The frequency associated with {chosen_note} is {color.ORANGE}{target_frequency} Hz{color.RESET}")
 
     # Extract the data from the audio file.
     data = get_data_from_file(target_frequency)
@@ -52,17 +50,16 @@ def main():
     )
 
     print(
-        f"%sYou played a note with a frequency of {played_frequency: .3f} Hz%s"
-        % (colors["COLOR_CYAN"], colors["COLOR_WHITE"])
+        f"{color.INFO_LINK}You played a note with a frequency of {played_frequency: .3f} Hz{color.RESET}"
     )
 
     # Verify if the recording was correct.
-    if fft_error(played_frequency) is False:
-        if not error_percentage(played_frequency, target_frequency, chosen_note):
+    if not fft_error(played_frequency): # Played frequency is not 0 Hz.
+        if not error_percentage(played_frequency, target_frequency, chosen_note): # Error <= ERROR_MARGIN
             ask_show(frequence, fourier_transform)  # Generate the graph & display it.
 
         else:
-            print("Graph not displayed\n")
+            print(f"{color.RED}Graph not displayed{color.RESET}\n")
 
     del chosen_note  # reset variable
 

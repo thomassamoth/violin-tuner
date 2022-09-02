@@ -10,15 +10,33 @@ from numpy.fft import fft
 
 from recording import timer
 
-# Display different colors in the console
-colors = {
-    "COLOR_WHITE": "\x1B[37m",
-    "COLOR_GREEN": "\x1B[92m",
-    "COLOR_ORANGE": "\x1B[38;2;255;185;83m",
-    "COLOR_CYAN": "\x1B[38;2;0;255;247m",
-    "COLOR_RED": "\x1B[31m",
-    "COLOR_RESET": "\x1b[0m",
-}
+
+class color:
+    """Display different colors in the console."""
+
+    WHITE = "\x1B[37m"
+    GREEN = "\x1B[92m"
+    ORANGE = "\x1B[38;2;255;185;83m"
+    CYAN = "\x1B[38;2;0;255;247m"
+    RED = "\x1B[31m"
+
+    RESET = "\x1b[0m"
+
+    # Bootstrap inpired :)
+    link-primary = "\x1B[38;2;13;110;253m"
+    link_success = "\x1B[38;25;135;84m"
+    link_danger = "\x1B[38;2;220;53;69m"
+    link_warning = "\x1B[38;2;255;193;7m"
+    link_info = "\x1B[8;2;13;202;240m"
+
+    alert_primary_bg =""
+    alert_success_bg=""
+    alert_danger_bg=""
+    alert_warning_bg =""
+    alert_info_bg=""
+    WARNING_BG = "\x1B[38;2;255;255;51m"
+    INFO_BG = "\x1B[38;209;236;241m"
+
 
 note_frequency_dict = {"G": 196.00, "D": 292.66, "A": 440.00, "E": 659.25}
 
@@ -42,18 +60,13 @@ class ImportantPercentageError(Exception):
     """Raised when the error is over ERROR_MARGIN."""
 
     def warning(self):
-        warning_msg = """Too important difference 
-        Please verify you have chosen the right string to tune """
+        warning_msg = """The difference seems to be to important!\n
+        Please verify you chose the right string to tune. """
 
-        return f"{warning_msg}"
+        return f"{color.WARNING_BG}{warning_msg}{color.RESET}"
 
     def reminder(self, chosen_note):
-        reminder_msg = f"%sReminder%s: you have chosen the note %s{chosen_note}%s" % (
-            colors["COLOR_ORANGE"],
-            colors["COLOR_WHITE"],
-            colors["COLOR_CYAN"],
-            colors["COLOR_WHITE"],
-        )
+        reminder_msg = f"{colors_class.link_primary}Reminder: you have chosen the note {chosen_note} {colors_class.RESET}"
         return reminder_msg
 
 
@@ -147,7 +160,7 @@ def error_percentage(played_frequency, target_frequency, chosen_note) -> bool:
         percentage_error = (
             abs(played_frequency - target_frequency) / target_frequency * 100
         )
-        
+
         if percentage_error >= ERROR_MARGIN:
             raise ImportantPercentageError()
 
@@ -201,7 +214,7 @@ def calculate_FFT(data, chosen_note, debut=0.0, duree=1.0, RATE=44_100) -> float
     played_frequency = 0.0  # setup a minimum value
 
     for i in range(int(fft_size)):
-        frequence[i] = round((1.0 / fft_size) * RATE * i, 5) 
+        frequence[i] = round((1.0 / fft_size) * RATE * i, 5)
         if fourier_transform[i] == np.amax(fourier_transform) and frequence[i] < 1000.0:
             played_frequency = frequence[i]
 
@@ -222,7 +235,7 @@ def get_data_from_file(target_frequency):
     Returns:
         numpy.ndarray: values that were extracted.
     """
-    
+
     FILE = os.path.join(str(target_frequency) + ".wav")
 
     # Play the sound file
