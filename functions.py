@@ -8,22 +8,32 @@ import scipy.io.wavfile as sciwave
 from matplotlib.pyplot import *
 from numpy.fft import fft
 
-# Colors for displaying text
-COLOR_WHITE = "\x1B[37m"
-COLOR_GREEN = "\x1B[92m"
-COLOR_ORANGE = "\x1B[38;2;255;185;83m"
-COLOR_CYAN = "\x1B[38;2;0;255;247m"
-COLOR_RED = "\x1B[31m"
-COLOR_RESET = "\x1b[0m"
+from recording import timer
+
+# Display different colors in the console
+colors = {
+    "COLOR_WHITE": "\x1B[37m",
+    "COLOR_GREEN": "\x1B[92m",
+    "COLOR_ORANGE": "\x1B[38;2;255;185;83m",
+    "COLOR_CYAN": "\x1B[38;2;0;255;247m",
+    "COLOR_RED": "\x1B[31m",
+    "COLOR_RESET": "\x1b[0m",
+}
 
 note_frequency_dict = {"G": 196.00, "D": 292.66, "A": 440.00, "E": 659.25}
 
 
-ERROR_MARGIN = 20  # %
+ERROR_MARGIN = 20
 
 
 class WrongNoteChoiceError(Exception):
     """Raised when the note is not in the dictionnary."""
+
+    pass
+
+
+class FftError(Exception):
+    """Raised when an error has occured during the recording"""
 
     pass
 
@@ -33,36 +43,31 @@ class ImportantPercentageError(Exception):
 
     def warning(self):
         warning_msg = """Too important difference 
-            Please verify you have chosen the right string to tune """
+        Please verify you have chosen the right string to tune """
 
-        return f"{type(ImportantPercentageError(Exception))} -> {warning_msg}"
+        return f"{warning_msg}"
 
     def reminder(self, chosen_note):
         reminder_msg = f"%sReminder%s: you have chosen the note %s{chosen_note}%s" % (
-            COLOR_ORANGE,
-            COLOR_WHITE,
-            COLOR_CYAN,
-            COLOR_WHITE,
+            colors["COLOR_ORANGE"],
+            colors["COLOR_WHITE"],
+            colors["COLOR_CYAN"],
+            colors["COLOR_WHITE"],
         )
         return reminder_msg
-
-
-class FftError(Exception):
-    """Raised when an error has occured during the recording"""
-
-    pass
 
 
 def ask_note():
     """Ask the note the user wants to tune.
 
     Raises
-        TypeError: the user entered a number and not a letter
-        WrongNoteChoiceError: the note is not in the dictionnary
+        TypeError: the user entered a number and not a letter.
+        WrongNoteChoiceError: the note is not in the dictionnary.
 
     Returns
-        string: the note that was chosen by the user
+        string: the note chosen character.
     """
+
     chosen_note = input("\nChoose a note to check (English naming convention) : ")
     try:
         if chosen_note.isdigit():
@@ -82,7 +87,6 @@ def ask_note():
         pass
 
     try:
-        # chosen_note
         if chosen_note.upper() not in note_frequency_dict:
             raise WrongNoteChoiceError(
                 f"The note {chosen_note} is not in the dictionnary {note_frequency_dict.keys()}"
@@ -97,8 +101,8 @@ def ask_note():
 
 
 def ask_show(frequence, fourier_transform):
-    """Asks if the user wants to display the FFT graph.
-    Graphics has been generated in functions.tracerFFT()
+    """Ask if the user wants to display the FFT graph.
+    Graphics are separately generated if the answer is positive.
     """
 
     def generate_graph(frequence, fourier_transform):
@@ -107,64 +111,73 @@ def ask_show(frequence, fourier_transform):
         figure(figsize=(10, 5))  # window's height, width in inches
         vlines(x=frequence, ymin=[0], ymax=fourier_transform, colors="b")
         # frequency, background color, spectre, line colour
-        #plot(frequence, 1, 'ro')
+        # plot(frequence, 1, 'ro')
         xlabel("Frequency (Hz)")
         ylabel("Amplitude")
         title(f"Fast Fourier Transform")
         axis([0, 1000, 0, 1])
         grid()
         show()
-    
+
     answer = None
     while answer not in ("y", "n"):
         answer = input("Do you want to display the graphics ? [y/n] ").lower()
         if answer == "y":
-            print("%sGraph displayed\n%s" % (COLOR_ORANGE, COLOR_WHITE))
+            print(
+                "%sGraph displayed\n%s"
+                % (colors["COLOR_ORANGE"], colors["COLOR_WHITE"])
+            )
             generate_graph(frequence, fourier_transform)
-    
 
 
 def error_percentage(played_frequency, target_frequency, chosen_note) -> bool:
-    """Tells the error between the played frequency & the target.
+    """Tell the error between the played frequency & the target.
 
     Args:
-        played_frequency {float}: the picking frequency extracted from the data
-        target_frequency {float}: the frequency linked with the chosen note
-        chosen_note {string}: the note that was chosen by the user
+        played_frequency {float}: the picking frequency extracted from the data.
+        target_frequency {float}: the frequency linked with the chosen note.
+        chosen_note {string}: the note that was chosen by the user.
 
     Returns:
         {boolean}: An error message has been generated or not
     """
-    error_msg = True
+
+    error_message = True
     try:
         percentage_error = (
             abs(played_frequency - target_frequency) / target_frequency * 100
         )
+        
         if percentage_error >= ERROR_MARGIN:
             raise ImportantPercentageError()
 
     except ImportantPercentageError as IPE:
         print(IPE.warning())
         print(IPE.reminder(chosen_note))
-        return error_msg
+        return error_message
+
     finally:
         print(f"Percentage Error : {percentage_error:.3f} %")
 
     if percentage_error == 0:
-        print("%sYour note is tuned! Well done!%s" % (COLOR_GREEN, COLOR_WHITE))
-        error_msg = False
-        return error_msg
+        print(
+            "%sYour note is tuned! Well done!%s\n"
+            % (colors["COLOR_GREEN"], colors["COLOR_WHITE"])
+        )
+        error_message = False
+        return error_message
 
 
 def pause_program(pause):
     """Make a pause in the program so that the user prepares to record."""
 
     print(f"Pause of {pause} seconds underway - Prepare for recording\n")
-    time.sleep(pause)
+    timer(pause)
+    # os.system("clear")
 
 
 def calculate_FFT(data, chosen_note, debut=0.0, duree=1.0, RATE=44_100) -> float:
-    """Calculates the FFT and get the peaking frequency
+    """Calculate the FFT and get the peaking frequency.
 
     Args:
         data (numpy array): the input data
@@ -185,52 +198,50 @@ def calculate_FFT(data, chosen_note, debut=0.0, duree=1.0, RATE=44_100) -> float
     fft_size = fourier_transform.size
 
     frequence = np.zeros(fft_size)  # fill a np array with zeros
-    frequence_jouee_interne = 0.0  # setup a minimum value
+    played_frequency = 0.0  # setup a minimum value
 
     for i in range(int(fft_size)):
-        frequence[i] = round((1.0 / fft_size) * RATE * i, 5)  # decimals
+        frequence[i] = round((1.0 / fft_size) * RATE * i, 5) 
         if fourier_transform[i] == np.amax(fourier_transform) and frequence[i] < 1000.0:
-            frequence_jouee_interne = frequence[i]
+            played_frequency = frequence[i]
 
     return (
-        frequence_jouee_interne,
+        played_frequency,
         frequence,
         fourier_transform,
     )  # needed to plot the graph afterwards
 
 
 def get_data_from_file(target_frequency):
-    """Exctract the data from the file we recorded.
+    """Extract the data from the file we recorded.
 
     Args:
         target_frequency (float): the frequency we want to get close to.
         It is used to get the file's name.
 
     Returns:
-        numpy.ndarray: _description_
+        numpy.ndarray: values that were extracted.
     """
+    
     FILE = os.path.join(str(target_frequency) + ".wav")
 
     # Play the sound file
     RATE, data = sciwave.read(FILE)  # get the sample rate and the different values
-    TAB = np.array(data)  # conversion into a numpy array
 
     def print_data(data):
         # Get all the values from the array (--debug--)
         np.set_printoptions(threshold=sys.maxsize)
-        # print("tab=", TAB)
         data_size = data.size
-        # print(f"Data size: {data_size}")
         DUREE = 1.0 * data_size / RATE
-        print(f"Duree: {DUREE}")
         return data_size
 
-    def sound_spectrum(data, data_size):
-        # Get the sound spectrum
+    def display_sound_spectrum(data, data_size):
+        """Get the sound spectrum"""
         te = 1.0 / RATE
         t = np.zeros(data_size)  # fill the array with zeros
         for k in range(data_size):
             t[k] = te * k
+
         figure(figsize=(12, 4))
         plot(t, data)
         xlabel("t (s)")
@@ -243,9 +254,9 @@ def get_data_from_file(target_frequency):
     # Debug
     def debug(data):
         data_size = print_data(data)
-        sound_spectrum(data, data_size)
+        display_sound_spectrum(data, data_size)
 
-    # debug(data)
+    # debug(data)  # Uncomment to activate the debug mode"""
     return data
 
 
@@ -256,17 +267,21 @@ def fft_error(PlayedFrequency) -> bool:
         PlayedFrequency (_type_): _description_
 
     Raises:
-        FftError: An error occured while calculating the FFT and returned freq. is 0.
+        FFT: An error occured while calculating the FFT and returned freq. is 0.
 
     Returns:
         bool: An exception has been raised or not
     """
     try:
         if PlayedFrequency == 0:
-            raise FftError("An error has occured while calculating the Fourier Transform.")
+            raise FftError(
+                "An error has occured while calculating the Fourier Transform."
+            )
+            pass
+
         # os.system("clear")
 
-    except FftError() as e:
+    except FftError as e:
         print(f"{type(e)} -> {e}")
         print("Please try again !\n")
         return True

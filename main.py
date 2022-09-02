@@ -20,49 +20,52 @@ from numpy.fft import fft
 from functions import *
 from recording import record, timer
 
-COLOR_WHITE = "\n\x1B[97m"
-COLOR_GREEN = "\x1B[92m"
-COLOR_ORANGE = "\x1B[38;2;255;185;83m"
-COLOR_CYAN = "\x1B[96m"
+from functions import colors
 
 
 def main():
     chosen_note = ask_note()
 
-    # Gets the chosen note's related frequency
+    # Gets the chosen note's related frequency.
     target_frequency = note_frequency_dict[chosen_note]
 
     # Generates the name from the frequency.
     WAVE_OUTPUT_FILENAME = f"{str(target_frequency)}.wav"
-    
-    pause_program(5)
-    # Records the audio file
+
+    pause_program(0)
+    # Record the audio file.
     record(WAVE_OUTPUT_FILENAME, duration=3)
 
     print(
         f"%sThe frequency associated with {chosen_note} is %s{target_frequency} Hz%s"
-        % (COLOR_WHITE,COLOR_ORANGE, COLOR_WHITE)
+        % (colors["COLOR_WHITE"], colors["COLOR_ORANGE"], colors["COLOR_WHITE"])
     )
 
-    
-    # Excracts the data from the audio file
+    # Extract the data from the audio file.
     data = get_data_from_file(target_frequency)
-
-    # Get the FFT peaking value and the frequency associated with
-    played_frequency, frequence, fourier_transform = calculate_FFT(data, chosen_note, 0.0, duree=3,)
+        
+    # Get the FFT peak value and the frequency associated with.
+    played_frequency, frequence, fourier_transform = calculate_FFT(
+        data,
+        chosen_note,
+        duree=3,
+    )
 
     print(
-        f"\033[96m\nPlayed frequency {chosen_note} ={played_frequency} Hz\n\x1B[37m"
+        f"%sYou played a note with a frequency of {played_frequency: .3f} Hz%s"
+        % (colors["COLOR_CYAN"], colors["COLOR_WHITE"])
     )
-    # Verifies if the recording was correct
+
+    # Verify if the recording was correct.
     if fft_error(played_frequency) is False:
         if not error_percentage(played_frequency, target_frequency, chosen_note):
-            ask_show(frequence, fourier_transform) # generates the graph and displays it
+            ask_show(frequence, fourier_transform)  # Generate the graph & display it.
 
         else:
-            print("Graph not displayed")
-            
-    del chosen_note # reset variable
+            print("Graph not displayed\n")
+
+    del chosen_note  # reset variable
+
 
 if __name__ == "__main__":
     main()
