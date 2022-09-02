@@ -1,26 +1,23 @@
 # 🎻 Violin Tuner
 
-<div align = "center">
-    
-<a href="">[![version - v1.2.0](https://img.shields.io/badge/version-v1.2.0-4ec1ff)](https://github.com/thomassamoth/violin-tuner/releases/tag/1.2.0)</a>
-<a href="">[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)</a>
-<a href="">[![python](https://img.shields.io/badge/python-3.8.10-blue)](http://python.org)</a>
-</div>
+[![version - v1.2.0](https://img.shields.io/badge/version-v1.2.0-4ec1ff)](https://github.com/thomassamoth/violin-tuner/releases/tag/1.2.0) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![python](https://img.shields.io/badge/python-3.8.10-blue)](http://python.org)
 
 Project we did a few years ago to create a violin tuner, based on a Raspberry Pi.  
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Raspberry_Pi_3_B%2B_%2839906370335%29.png/1280px-Raspberry_Pi_3_B%2B_%2839906370335%29.png" height="200">  
-This project is inspired by the [Roadie Tuner](https://www.roadiemusic.com/) (made for guitars) and divided into 3 parts : 
+The initial project was inspired by the [Roadie Tuner](https://www.roadiemusic.com/) (made for guitars) and divided into 3 parts :
+
 1. Find the **frequency** played by the violin
 2. Turn the **motor** to reach the desired frequency
-3. "User **Interface**" using a RGB LED
+3. User **Interface** using a RGB LED
 
-*This part of the project can be used by itself and doesn't need the other ones*
+> **Note**  
+This part of the project can be used by itself and doesn't need the other ones.  
 
 ## Dependencies
 
 To use this program and install packages,  simply run `pip install -r requirements.txt`
 
-# List of features to add
+## List of features to add
 
 - [X] Put the recording inside a function to loop it
 - [X] Add more precision for a frequency to be detected
