@@ -1,7 +1,6 @@
 # 🎻 Violin Tuner
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/thomassamoth/violin-tuner?color=%2357bef6&label=version)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![python](https://img.shields.io/badge/python-3.8.10-blue)](http://python.org)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/thomassamoth/violin-tuner?color=4ec1ff) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![python](https://img.shields.io/badge/python-3.8.10-blue)](http://python.org)
 
 Project we did a few years ago to create a violin tuner, based on a Raspberry Pi.  
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Raspberry_Pi_3_B%2B_%2839906370335%29.png/1280px-Raspberry_Pi_3_B%2B_%2839906370335%29.png" height="200">  
