@@ -37,7 +37,7 @@ def main():
     record(WAVE_OUTPUT_FILENAME, duration=3)
 
     print(
-        f"{color.link_primary}The frequency associated with {chosen_note} is {color.ORANGE}{target_frequency} Hz{color.RESET}")
+        f"{color.CYAN}The frequency associated with {chosen_note} is {color.ORANGE}{target_frequency} Hz{color.RESET}")
 
     # Extract the data from the audio file.
     data = get_data_from_file(target_frequency)
@@ -50,7 +50,7 @@ def main():
     )
 
     print(
-        f"{color.INFO_LINK}You played a note with a frequency of {played_frequency: .3f} Hz{color.RESET}"
+        f"You played a note with a frequency of {color.CYAN}{played_frequency:.3f} Hz{color.RESET}"
     )
 
     # Verify if the recording was correct.
@@ -59,7 +59,7 @@ def main():
             ask_show(frequence, fourier_transform)  # Generate the graph & display it.
 
         else:
-            print(f"{color.RED}Graph not displayed{color.RESET}\n")
+            print(f"{color.RED}\nGraph not displayed{color.RESET}\n")
 
     del chosen_note  # reset variable
 

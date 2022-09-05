@@ -8,6 +8,8 @@ import scipy.io.wavfile as sciwave
 from matplotlib.pyplot import *
 from numpy.fft import fft
 
+from timeit import default_timer as timer_it
+
 from recording import timer
 
 
@@ -21,27 +23,11 @@ class color:
     RED = "\x1B[31m"
 
     RESET = "\x1b[0m"
-
-    # Bootstrap inpired :)
-    link-primary = "\x1B[38;2;13;110;253m"
-    link_success = "\x1B[38;25;135;84m"
-    link_danger = "\x1B[38;2;220;53;69m"
-    link_warning = "\x1B[38;2;255;193;7m"
-    link_info = "\x1B[8;2;13;202;240m"
-
-    alert_primary_bg =""
-    alert_success_bg=""
-    alert_danger_bg=""
-    alert_warning_bg =""
-    alert_info_bg=""
-    WARNING_BG = "\x1B[38;2;255;255;51m"
-    INFO_BG = "\x1B[38;209;236;241m"
-
-
+    
 note_frequency_dict = {"G": 196.00, "D": 292.66, "A": 440.00, "E": 659.25}
 
 
-ERROR_MARGIN = 20
+ERROR_MARGIN = 2
 
 
 class WrongNoteChoiceError(Exception):
@@ -60,13 +46,13 @@ class ImportantPercentageError(Exception):
     """Raised when the error is over ERROR_MARGIN."""
 
     def warning(self):
-        warning_msg = """The difference seems to be to important!\n
-        Please verify you chose the right string to tune. """
+        warning_msg = ("The difference seems to be too important!"
+        "Please verify you chose the right string to tune.")
 
-        return f"{color.WARNING_BG}{warning_msg}{color.RESET}"
+        return f"{warning_msg}\n"
 
     def reminder(self, chosen_note):
-        reminder_msg = f"{colors_class.link_primary}Reminder: you have chosen the note {chosen_note} {colors_class.RESET}"
+        reminder_msg = f"{color.ORANGE}\nReminder: you have chosen the note {chosen_note} {color.RESET}\n"
         return reminder_msg
 
 
@@ -137,8 +123,7 @@ def ask_show(frequence, fourier_transform):
         answer = input("Do you want to display the graphics ? [y/n] ").lower()
         if answer == "y":
             print(
-                "%sGraph displayed\n%s"
-                % (colors["COLOR_ORANGE"], colors["COLOR_WHITE"])
+                f"{color.GREEN}Graph displayed\n{color.RESET}"
             )
             generate_graph(frequence, fourier_transform)
 
@@ -174,8 +159,7 @@ def error_percentage(played_frequency, target_frequency, chosen_note) -> bool:
 
     if percentage_error == 0:
         print(
-            "%sYour note is tuned! Well done!%s\n"
-            % (colors["COLOR_GREEN"], colors["COLOR_WHITE"])
+            f"{color.GREEN}Your note is tuned! Well done!{color.RESET}\n"
         )
         error_message = False
         return error_message
@@ -216,8 +200,8 @@ def calculate_FFT(data, chosen_note, debut=0.0, duree=1.0, RATE=44_100) -> float
     for i in range(int(fft_size)):
         frequence[i] = round((1.0 / fft_size) * RATE * i, 5)
         if fourier_transform[i] == np.amax(fourier_transform) and frequence[i] < 1000.0:
-            played_frequency = frequence[i]
-
+            played_frequency = frequence[i]  
+              
     return (
         played_frequency,
         frequence,
@@ -240,7 +224,7 @@ def get_data_from_file(target_frequency):
 
     # Play the sound file
     RATE, data = sciwave.read(FILE)  # get the sample rate and the different values
-
+    
     def print_data(data):
         # Get all the values from the array (--debug--)
         np.set_printoptions(threshold=sys.maxsize)
