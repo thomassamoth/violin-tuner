@@ -3,12 +3,11 @@
 import math
 import os
 import time
+from timeit import default_timer as timer_it
 
 import scipy.io.wavfile as sciwave
 from matplotlib.pyplot import *
 from numpy.fft import fft
-
-from timeit import default_timer as timer_it
 
 from recording import timer
 
@@ -27,7 +26,7 @@ class color:
 note_frequency_dict = {"G": 196.00, "D": 292.66, "A": 440.00, "E": 659.25}
 
 
-ERROR_MARGIN = 2
+ERROR_MARGIN = 20
 
 
 class WrongNoteChoiceError(Exception):
