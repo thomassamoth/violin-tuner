@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-"""
-Violin Tuner
-------------
+"""Violin Tuner
 This program allows someone to tune a violin. It records each sound played on 
 each note and tells if it's tuned or not.
 It uses Fast Fourier Transform to get the amplitude and determine the note
@@ -18,21 +16,21 @@ from matplotlib.pyplot import *
 from numpy.fft import fft
 
 from functions import *
-from recording import record, timer
-
 from functions import color
+from recording import record, timer
 
 
 def main():
     chosen_note = ask_note()
 
-    # Gets the chosen note's related frequency.
+    # Get the chosen note's related frequency.
     target_frequency = note_frequency_dict[chosen_note]
 
-    # Generates the name from the frequency.
+    # Generate the name from the frequency.
     WAVE_OUTPUT_FILENAME = f"{str(target_frequency)}.wav"
 
     pause_program(5)
+    
     # Record the audio file.
     record(WAVE_OUTPUT_FILENAME, duration=3)
 
