@@ -1,4 +1,5 @@
 numpy
 scipy
 matplotlib
-sounddevice
+sounddevice==0.4.6
+ansiconverter==1.0.0
