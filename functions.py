@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
+import argparse
 import math
 import os
 import time
-from timeit import default_timer as timer_it
 
 import scipy.io.wavfile as sciwave
 from matplotlib.pyplot import *
@@ -19,15 +19,19 @@ class color:
     GREEN = "\x1B[92m"
     ORANGE = "\x1B[38;2;255;185;83m"
     CYAN = "\x1B[38;2;0;255;247m"
-    RED = "\x1B[31m"
+    RED = "\x1b[38;2;255;255;255m"
 
     RESET = "\x1b[0m"
-    
+
+# Constants    
 note_frequency_dict = {"G": 196.00, "D": 292.66, "A": 440.00, "E": 659.25}
-
-
 ERROR_MARGIN = 20
+RATE = 44_100
 
+# Parser for the whole project.
+parser = argparse.ArgumentParser(description='Violin tuner')
+parser.add_argument('-n','--note', help='The note to be tuned', type=str.upper, choices=(note_frequency_dict.keys()))
+parser.add_argument('-y', action='store_true', help='Display the graph if FFT is correct and the note close enough.')
 
 class WrongNoteChoiceError(Exception):
     """Raised when the note is not in the dictionnary."""
@@ -45,7 +49,7 @@ class ImportantPercentageError(Exception):
     """Raised when the error is over ERROR_MARGIN."""
 
     def warning(self):
-        warning_msg = ("The difference seems to be too important!"
+        warning_msg = ("The difference seems to be too important!\n"
         "Please verify you chose the right string to tune.")
 
         return f"{warning_msg}\n"
@@ -69,7 +73,7 @@ def ask_note():
     chosen_note = input("\nChoose a note to check (English naming convention) : ")
     try:
         if chosen_note.isdigit():
-            raise TypeError("Please enter a letter and not a number")
+            raise TypeError("Please enter a letter, not a number")
             pass
         elif len(chosen_note) > 1:
             raise ValueError()
@@ -116,15 +120,23 @@ def ask_show(frequence, fourier_transform):
         axis([0, 1000, 0, 1])
         grid()
         show()
-
-    answer = None
-    while answer not in ("y", "n"):
-        answer = input("Do you want to display the graphics ? [y/n] ").lower()
-        if answer == "y":
-            print(
+    
+    args = parser.parse_args()
+    if args.y == True:
+        print(
                 f"{color.GREEN}Graph displayed\n{color.RESET}"
             )
-            generate_graph(frequence, fourier_transform)
+        generate_graph(frequence, fourier_transform)
+        
+    else:
+        answer = None
+        while answer not in ("y", "n"):
+            answer = input("Do you want to display the graphics ? [y/n] ").lower()
+            if answer == "y":
+                print(
+                    f"{color.GREEN}Graph displayed\n{color.RESET}"
+                )
+                generate_graph(frequence, fourier_transform)
 
 
 def error_percentage(played_frequency, target_frequency, chosen_note) -> bool:
@@ -150,7 +162,7 @@ def error_percentage(played_frequency, target_frequency, chosen_note) -> bool:
 
     except ImportantPercentageError as IPE:
         print(IPE.warning())
-        print(IPE.reminder(chosen_note))
+        # print(IPE.reminder(chosen_note))
         return error_message
 
     finally:
@@ -158,7 +170,7 @@ def error_percentage(played_frequency, target_frequency, chosen_note) -> bool:
 
     if percentage_error == 0:
         print(
-            f"{color.GREEN}Your note is tuned! Well done!{color.RESET}\n"
+            f"{color.GREEN}The string {note} is perfectly tuned! Well done!{color.RESET}\n"
         )
         error_message = False
         return error_message
@@ -172,13 +184,13 @@ def pause_program(pause):
     # os.system("clear")
 
 
-def calculate_FFT(data, chosen_note, debut=0.0, duree=1.0, RATE=44_100) -> float:
+def calculate_FFT(data, chosen_note, debut=0.0, duree=1.0, rate=RATE) -> float:
     """Calculate the FFT and get the peaking frequency.
 
     Args:
-        data (numpy array): the input data
-        RATE (int): sample rate
-        chosen_note (string): the note chosen by the user
+        data (numpy.ndarray): The input data
+        RATE (int): Sample rate
+        chosen_note (str): The note chosen by the user
         debut (float, optional): Starting point to calculate the FFT. Defaults to 0.
         duree (float, optional): Duration. Defaults to 1.0.
 
