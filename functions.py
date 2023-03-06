@@ -8,6 +8,7 @@ import time
 import scipy.io.wavfile as sciwave
 from matplotlib.pyplot import *
 from numpy.fft import fft
+from ansiconverter.converter import RGBtoANSI, HEXtoANSI
 
 from recording import timer
 
@@ -29,9 +30,14 @@ ERROR_MARGIN = 20
 RATE = 44_100
 
 # Parser for the whole project.
-parser = argparse.ArgumentParser(description='Violin tuner')
-parser.add_argument('-n','--note', help='The note to be tuned', type=str.upper, choices=(note_frequency_dict.keys()))
-parser.add_argument('-y', action='store_true', help='Display the graph if FFT is correct and the note close enough.')
+parser = argparse.ArgumentParser(description='Violin Tuner', formatter_class=argparse.RawTextHelpFormatter,)
+parser.add_argument('-y', action='store_true', help='Display output FFT graph.')
+parser.add_argument('-n', action='store_false', help="Do not display output FFT graph (default).")
+parser.add_argument('-s','--string', help='The string to be tuned', type=str.upper, choices=(note_frequency_dict.keys()))
+parser.add_argument('-p', '--precision', type=int, choices=[0, 2], default=2, help="Chose the precision when calculating the Fast Fourier Transform.\n"
+                    "0 : fast - precise at 1 Hz\n"
+                    "2 : slower - precise at 1/3 Hz\n")
+
 
 class WrongNoteChoiceError(Exception):
     """Raised when the note is not in the dictionnary."""
@@ -39,7 +45,7 @@ class WrongNoteChoiceError(Exception):
     pass
 
 
-class FftError(Exception):
+class FourierTransformError(Exception):
     """Raised when an error has occured during the recording"""
 
     pass
@@ -103,6 +109,7 @@ def ask_note():
 
 
 def ask_show(frequence, fourier_transform):
+    
     """Ask if the user wants to display the FFT graph.
     Graphics are separately generated if the answer is positive.
     """
@@ -122,10 +129,11 @@ def ask_show(frequence, fourier_transform):
         show()
     
     args = parser.parse_args()
-    if args.y == True:
-        print(
-                f"{color.GREEN}Graph displayed\n{color.RESET}"
-            )
+    
+    if args.n == False:
+        print(RGBtoANSI("Choice '-n' : graph not displayed", [255,0,0]))
+    elif args.y:
+        print(HEXtoANSI("Starting generating graph.... ", '#00A67D'))
         generate_graph(frequence, fourier_transform)
         
     else:
@@ -166,12 +174,10 @@ def error_percentage(played_frequency, target_frequency, chosen_note) -> bool:
         return error_message
 
     finally:
-        print(f"Percentage Error : {percentage_error:.3f} %")
+        print(f"Percentage Error : {percentage_error:.3f} %\n")
 
     if percentage_error == 0:
-        print(
-            f"{color.GREEN}The string {note} is perfectly tuned! Well done!{color.RESET}\n"
-        )
+        print(RGBtoANSI(f"The string {chosen_note} is perfectly tuned! Well done!",[0, 255,0]))
         error_message = False
         return error_message
 
@@ -184,7 +190,7 @@ def pause_program(pause):
     # os.system("clear")
 
 
-def calculate_FFT(data, chosen_note, debut=0.0, duree=1.0, rate=RATE) -> float:
+def calculate_FFT(data, chosen_note, debut=0.0, duree_fft=3.0, rate=44_100) -> float:   
     """Calculate the FFT and get the peaking frequency.
 
     Args:
@@ -192,14 +198,16 @@ def calculate_FFT(data, chosen_note, debut=0.0, duree=1.0, rate=RATE) -> float:
         RATE (int): Sample rate
         chosen_note (str): The note chosen by the user
         debut (float, optional): Starting point to calculate the FFT. Defaults to 0.
-        duree (float, optional): Duration. Defaults to 1.0.
+        duree_fft (float, optional): Duration. Defaults to 1.0.
 
     Returns:
         float: The frequency that has a maximum value of 1 (i.e. where there is the highest FFT value, and therefore the one which is played)
+        float: 
+        float: the fft values
     """
 
     start = int(debut * RATE)
-    stop = int((debut + duree) * RATE)
+    stop = int((debut + duree_fft) * RATE)
 
     fourier_transform = np.absolute(fft(data[start:stop]))
     fourier_transform /= fourier_transform.max()  # Get a maximum value of 1
@@ -240,7 +248,7 @@ def get_data_from_file(target_frequency):
         # Get all the values from the array (--debug--)
         np.set_printoptions(threshold=sys.maxsize)
         data_size = data.size
-        DUREE = 1.0 * data_size / RATE
+        duree_fft = 1.0 * data_size / RATE
         return data_size
 
     def display_sound_spectrum(data, data_size):
@@ -282,14 +290,14 @@ def fft_error(PlayedFrequency) -> bool:
     """
     try:
         if PlayedFrequency == 0:
-            raise FftError(
+            raise FourierTransformError(
                 "An error has occured while calculating the Fourier Transform."
             )
             pass
 
         # os.system("clear")
 
-    except FftError as e:
+    except FourierTransformError as e:
         print(f"{type(e)} -> {e}")
         print("Please try again !\n")
         return True

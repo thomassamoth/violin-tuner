@@ -10,7 +10,7 @@ def timer(duration):
         time.sleep(1)
         duration -= 1
 
-def record(filename, rate=RATE, duration=3):
+def record(filename, rate=44_100, duration=3):
     """Record the audio
 
     Args:

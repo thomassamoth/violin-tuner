@@ -5,25 +5,24 @@ each note and tells if it's tuned or not.
 It uses Fast Fourier Transform to get the amplitude and determine the note.
 """
 
-import math
-import time
 import argparse
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io.wavfile as sciwave
+from ansiconverter.converter import RGBtoANSI
 
 from functions import *
 from recording import record
 
+
 def main():
-    # parser = argparse.ArgumentParser(description='Violin tuner')
-    # parser.add_argument('-n','--note', help='The note to be tuned', type=str.upper, choices=(note_frequency_dict.keys()))
-    # parser.add_argument('-y', action='store_true', help='Display the graph if FFT is correct and the note close enough.')
 
     args = parser.parse_args()
     
-    if args.note:
-        chosen_note = args.note.upper()
+    if args.string:
+        chosen_note = args.string.upper()
         print(f"Using note '{chosen_note}' specified by command-line argument")
         
     else:
@@ -46,13 +45,16 @@ def main():
 
     # Extract the data from the audio file.
     data = get_data_from_file(target_frequency)
+    
+    if(args.precision == 0):
+        precision = 1
+    elif(args.precision == 1):
+        pass
+    elif(args.precision == 2):
+        precision = 3
         
     # Get the FFT peak value and the frequency associated with it.
-    played_frequency, frequence, fourier_transform = calculate_FFT(
-        data,
-        chosen_note,
-        duree=3,
-    )
+    played_frequency, frequence, fourier_transform = calculate_FFT(data,chosen_note,duree_fft=precision)
 
     print(
         f"You played a note with a frequency of {color.CYAN}{played_frequency:.3f} Hz{color.RESET}"
@@ -64,7 +66,7 @@ def main():
             ask_show(frequence, fourier_transform)  # Generate the graph & display it.
 
         else:
-            print(f"{color.RED}\nGraph not displayed{color.RESET}\n")
+            print(RGBtoANSI("Graph not displayed", [255, 0, 0]))
 
     del chosen_note  # reset variable
     
