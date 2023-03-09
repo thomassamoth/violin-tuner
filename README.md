@@ -39,23 +39,17 @@ You can both use the program with the ```python main.py``` command or with the [
 ### CLI Usage
 
 ```bash
-python main.py 
-
-usage: main.py [-h] [-y] [-n] [-S {G,D,A,E}] [-p {0,2}]
-
-Violin Tuner
-
-options:
-  -h, --help            show this help message and exit
-  -y                    Display the output FFT graph.
-  -n                    Do not display the output FFT graph (default).
-  -S {G,D,A,E}, --string {G,D,A,E}
-                        The string to be tuned
-  -p {0,2}, --precision {0,2}
-                        Select the precision when calculating the Fast Fourier Transform.
-                        0 : fast - precise at 1 Hz
-                        2 : slower - precise at 1/3 Hz
+python main.py [option]
 ```
+
+| Option | Long Form     | Description                                            | Type   | Default | Choices         |
+|--------|---------------|--------------------------------------------------------|--------|---------|-----------------|
+| `-h`   | `--help`      | Show the help message and exit                         |        |         |                 |
+| `-y`   |               | Display the output FFT graph                           | `bool` | `false` |                 |
+| `-n`   |               | Do not display the output FFT graph                    | `bool` | `true`  |                 |
+| `-S`   | `--string`    | The string you want to chose                           | `str`  | `false` | `G` `D` `A` `E` |
+| `-p`   | `--precision` | The precision for the FFT calculation                  | `int`  |         | `0` `2`        |
+|        | `--debug`     | Activate the debug mode to display the audio spectrum. | `bool` | `false` |                 |
 
 ## List of features to add
 
